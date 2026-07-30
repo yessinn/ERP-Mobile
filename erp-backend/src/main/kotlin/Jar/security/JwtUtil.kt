@@ -24,4 +24,33 @@ class JwtUtil {
             .signWith(secretKey)
             .compact()
     }
+
+    fun extractEmail(token: String): String {
+        return Jwts.parser()
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(token)
+            .payload
+            .subject
+    }
+
+    fun extractRole(token: String): String {
+        return Jwts.parser()
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(token)
+            .payload["role"] as String
+    }
+
+    fun isTokenValid(token: String): Boolean {
+        return try {
+            Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 }

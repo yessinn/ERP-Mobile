@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import Jar.dto.LoginRequest
 import Jar.security.JwtUtil
-
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(

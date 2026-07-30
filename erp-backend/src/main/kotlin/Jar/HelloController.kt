@@ -10,4 +10,9 @@ class HelloController {
     fun sayHello(): String {
         return "Hello from the ERP backend!"
     }
+
+    @GetMapping("/api/protected")
+    fun protectedRoute(): String {
+        return "If you see this, your JWT token is valid!"
+    }
 }

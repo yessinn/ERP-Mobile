@@ -1,0 +1,40 @@
+### ========== BACKEND (Kotlin / Maven) ========== ###
+erp-backend/target/
+erp-backend/.mvn/wrapper/maven-wrapper.jar
+
+### ========== MOBILE (Android / Gradle) ========== ###
+erp-mobile-android/*.iml
+erp-mobile-android/.gradle/
+erp-mobile-android/build/
+erp-mobile-android/app/build/
+erp-mobile-android/local.properties
+erp-mobile-android/.cxx/
+erp-mobile-android/captures/
+erp-mobile-android/.externalNativeBuild/
+
+### ========== IntelliJ IDEA / Android Studio (commun) ========== ###
+.idea/
+*.iws
+*.ipr
+out/
+.navigation/
+captures/
+
+# Ne PAS ignorer ces fichiers .idea utiles au partage d'équipe si vous les gérez volontairement :
+# !.idea/runConfigurations
+
+### ========== Secrets / config locale (JAMAIS commit) ========== ###
+**/application-local.properties
+**/application.properties
+!**/application.properties.example
+*.env
+.env.local
+
+### ========== OS ========== ###
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### ========== Logs ========== ###
+*.log
+logs/

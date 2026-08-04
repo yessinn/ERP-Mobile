@@ -23,7 +23,7 @@ Base URL locale (dev) : `http://localhost:8080` (backend) /
 
 ### Réponse succès — 200
 
-⚠️ **Format réel confirmé le 2026-08 : texte brut, PAS du JSON.**
+⚠️ **Format réel confirmé : texte brut, PAS du JSON.**
 
 ```
 Content-Type: text/plain;charset=UTF-8
@@ -33,10 +33,23 @@ eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOi...   ← le token JWT directement, sans accolade
 
 Le mobile utilise donc `Response<String>` (converter Scalars), pas un DTO JSON.
 
-### Réponse échec
+### Réponse échec — 401 Unauthorized ✅ corrigé le 2026-08-05
 
-- Code retourné à confirmer avec Yessin (401 supposé pour identifiants invalides)
-- Format du corps d'erreur à confirmer (texte brut aussi, ou JSON avec message ?)
+Avant correction, le backend renvoyait 200 avec un texte d'erreur — ce qui empêchait
+le mobile de distinguer succès/échec via le code HTTP. Corrigé dans `AuthController.kt`
+en passant le retour de `login()` à `ResponseEntity<String>`.
+
+```
+Content-Type: text/plain;charset=UTF-8
+Status: 401
+
+"User not found"        ← email inexistant
+"Invalid password"      ← mot de passe incorrect
+```
+
+Le mobile affiche dans les deux cas : "Email ou mot de passe incorrect"
+(pas de distinction volontaire côté UI, pour ne pas révéler quel champ est faux —
+bonne pratique de sécurité).
 
 ### Contenu du token JWT (décodé)
 
@@ -57,12 +70,38 @@ Le mobile utilise donc `Response<String>` (converter Scalars), pas un DTO JSON.
 
 ### Requête
 
-⚠️ À documenter — structure exacte de `RegisterRequest.kt` côté backend
-(quels champs, lesquels sont obligatoires).
+```json
+{
+  "email": "user@example.com",
+  "password": "motdepasse",
+  "role": "ADMIN"
+}
+```
 
-### Réponse
+⚠️ À confirmer avec Yessin : les valeurs exactes possibles pour `role`
+(ADMIN, COMMERCIAL, MAGASINIER... ?) et si le champ est obligatoire ou a une valeur par défaut.
 
-⚠️ À documenter — même format que login (texte brut) ou différent ?
+### Réponse succès — 200
+
+Renvoie actuellement l'objet `User` complet en JSON, **incluant le mot de passe chiffré (BCrypt)** :
+
+```json
+{
+  "id": 1,
+  "email": "user@example.com",
+  "password": "$2a$10$...",
+  "role": "ADMIN"
+}
+```
+
+⚠️ **À corriger côté backend** : ne pas renvoyer le champ `password`, même chiffré.
+Prévoir un DTO de réponse dédié (`UserResponse` sans le mot de passe) — planifié étape 3
+de la roadmap actuelle.
+
+### Réponse échec
+
+⚠️ À documenter — comportement non testé si l'email existe déjà (devrait renvoyer une erreur,
+à vérifier qu'il ne crée pas un doublon ou n'écrase pas silencieusement).
 
 ---
 

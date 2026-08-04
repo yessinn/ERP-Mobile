@@ -3,10 +3,13 @@ package Jar
 import Jar.dto.RegisterRequest
 import Jar.model.User
 import Jar.repository.UserRepository
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import Jar.dto.LoginRequest
 import Jar.security.JwtUtil
+
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
@@ -27,17 +30,18 @@ class AuthController(
 
         return userRepository.save(newUser)
     }
+
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequest): String {
+    fun login(@RequestBody request: LoginRequest): ResponseEntity<String> {
         val user = userRepository.findByEmail(request.email)
-            ?: return "User not found"
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found")
 
         val passwordMatches = passwordEncoder.matches(request.password, user.password)
 
         return if (passwordMatches) {
-            jwtUtil.generateToken(user.email, user.role)
+            ResponseEntity.ok(jwtUtil.generateToken(user.email, user.role))
         } else {
-            "Invalid password"
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password")
         }
     }
 }

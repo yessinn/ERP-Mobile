@@ -48,6 +48,7 @@ fun LoginScreen(
     LaunchedEffect(uiState.isLoginSuccessful) {
         if (uiState.isLoginSuccessful) {
             onLoginSuccess()
+            viewModel.resetLoginSuccessFlag()
         }
     }
 

@@ -24,9 +24,11 @@ class LoginViewModel(
         _uiState.value = _uiState.value.copy(password = newPassword, errorMessage = null)
     }
 
-    fun login() {
-        android.util.Log.d("LoginViewModel", "login() appelé, email=${_uiState.value.email}")
+    fun resetLoginSuccessFlag() {
+        _uiState.value = _uiState.value.copy(isLoginSuccessful = false)
+    }
 
+    fun login() {
         val current = _uiState.value
 
         if (current.email.isBlank() || current.password.isBlank()) {
@@ -37,17 +39,15 @@ class LoginViewModel(
         _uiState.value = current.copy(isLoading = true, errorMessage = null)
 
         viewModelScope.launch {
-            android.util.Log.d("LoginViewModel", "Appel API en cours...")
             when (val result = authRepository.login(current.email.trim(), current.password)) {
                 is AuthResult.Success -> {
-                    android.util.Log.d("LoginViewModel", "Succès, token reçu")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         isLoginSuccessful = true
                     )
                 }
+
                 is AuthResult.Error -> {
-                    android.util.Log.d("LoginViewModel", "Erreur: ${result.message}")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         errorMessage = result.message
@@ -57,3 +57,4 @@ class LoginViewModel(
         }
     }
 }
+

@@ -37,10 +37,8 @@ class AuthRepository(
                 AuthResult.Error(message)
             }
         } catch (e: IOException) {
-            android.util.Log.e("AuthRepository", "Erreur réseau lors du login", e)
             AuthResult.Error("Impossible de contacter le serveur. Vérifie ta connexion.")
         } catch (e: Exception) {
-            android.util.Log.e("AuthRepository", "Erreur inattendue lors du login", e)
             AuthResult.Error("Une erreur inattendue est survenue : ${e.message}")
         }
     }

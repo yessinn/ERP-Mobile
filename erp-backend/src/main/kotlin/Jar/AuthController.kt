@@ -1,6 +1,7 @@
 package Jar
 
 import Jar.dto.RegisterRequest
+import Jar.dto.UserResponse
 import Jar.model.User
 import Jar.repository.UserRepository
 import org.springframework.http.HttpStatus
@@ -19,7 +20,7 @@ class AuthController(
 ) {
 
     @PostMapping("/register")
-    fun register(@RequestBody request: RegisterRequest): User {
+    fun register(@RequestBody request: RegisterRequest): ResponseEntity<UserResponse> {
         val encryptedPassword = passwordEncoder.encode(request.password)
 
         val newUser = User(
@@ -28,7 +29,8 @@ class AuthController(
             role = request.role
         )
 
-        return userRepository.save(newUser)
+        val savedUser = userRepository.save(newUser)
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserResponse.fromUser(savedUser))
     }
 
     @PostMapping("/login")

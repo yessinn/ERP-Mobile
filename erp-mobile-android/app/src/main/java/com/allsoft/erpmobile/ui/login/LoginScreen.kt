@@ -40,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun LoginScreen(
     viewModelFactory: LoginViewModelFactory,
     onLoginSuccess: () -> Unit,
+    onNavigateToRegister: () -> Unit,
     viewModel: LoginViewModel = viewModel(factory = viewModelFactory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -134,6 +135,14 @@ fun LoginScreen(
                     )
                 } else {
                     Text("Se connecter")
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            androidx.compose.foundation.layout.Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Pas encore de compte ?")
+                androidx.compose.material3.TextButton(onClick = onNavigateToRegister) {
+                    Text("S'inscrire")
                 }
             }
         }

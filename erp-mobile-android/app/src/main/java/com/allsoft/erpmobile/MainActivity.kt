@@ -10,31 +10,22 @@ import androidx.compose.ui.Modifier
 import com.allsoft.erpmobile.data.local.TokenManager
 import com.allsoft.erpmobile.data.remote.RetrofitClient
 import com.allsoft.erpmobile.data.repository.AuthRepository
-import com.allsoft.erpmobile.ui.login.LoginScreen
-import com.allsoft.erpmobile.ui.login.LoginViewModelFactory
+import com.allsoft.erpmobile.ui.AppNavigation
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Câblage manuel des dépendances (pas de Hilt pour l'instant)
         val tokenManager = TokenManager(applicationContext)
         val authApi = RetrofitClient.create(tokenManager)
         val authRepository = AuthRepository(authApi, tokenManager)
-        val loginViewModelFactory = LoginViewModelFactory(authRepository)
 
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    LoginScreen(
-                        viewModelFactory = loginViewModelFactory,
-                        onLoginSuccess = {
-                            android.widget.Toast.makeText(
-                                applicationContext,
-                                "Connexion réussie !",
-                                android.widget.Toast.LENGTH_LONG
-                            ).show()
-                        }
+                    AppNavigation(
+                        authRepository = authRepository,
+                        tokenManager = tokenManager
                     )
                 }
             }
